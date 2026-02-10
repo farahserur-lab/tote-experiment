@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BURNT TOTES | Canvas Companions</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=VT323&family=Comic+Neue:wght@400;700&family=Permanent+Marker&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Y2K Electric Palette */
+            --electric-blue: #0066FF;
+            --sky-blue: #87CEEB;
+            --lime-yellow: #E8FF00;
+            --hot-pink: #FF69B4;
+            --cyber-purple: #9D4EDD;
+            --white: #FFFFFF;
+            --black: #000000;
+            --window-gray: #C0C0C0;
+            --window-dark: #808080;
+            --window-light: #DFDFDF;
+            --title-bar: #000080;
+            
+            /* Spring animations */
+            --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Pixelated cursor */
+        html {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M0 0h4v4H0zM4 4h4v4H4zM8 8h4v4H8zM4 8h4v4H4zM0 12h4v4H0zM8 12h4v4H8zM12 12h4v4h-4z'/%3E%3Cpath fill='%23fff' d='M4 0h4v4H4zM0 4h4v4H0zM0 8h4v4H0zM4 12h4v4H4z'/%3E%3C/svg%3E") 0 0, auto;
+        }
+
+        body {
+            font-family: 'Comic Neue', cursive;
+            background: linear-gradient(180deg, var(--sky-blue) 0%, var(--white) 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Clouds background */
+        .clouds {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: float-cloud linear infinite;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .cloud-1 { width: 200px; height: 60px; top: 10%; left: -200px; animation-duration: 60s; }
+        .cloud-1::before { width: 100px; height: 80px; top: -40px; left: 30px; }
+        .cloud-1::after { width: 120px; height: 70px; top: -30px; left: 80px; }
+
+        .cloud-2 { width: 150px; height: 45px; top: 25%; left: -150px; animation-duration: 80s; animation-delay: -20s; }
+        .cloud-2::before { width: 70px; height: 60px; top: -35px; left: 20px; }
+        .cloud-2::after { width: 90px; height: 55px; top: -25px; left: 60px; }
+
+        .cloud-3 { width: 180px; height: 50px; top: 5%; left: -180px; animation-duration: 70s; animation-delay: -40s; }
+        .cloud-3::before { width: 90px; height: 70px; top: -40px; left: 25px; }
+        .cloud-3::after { width: 100px; height: 60px; top: -30px; left: 70px; }
+
+        @keyframes float-cloud {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(100vw + 300px)); }
+        }
+
+        /* Desktop Icons */
+        .desktop-icons {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .desktop-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 8px;
+            border: 1px dotted transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .desktop-icon:hover {
+            background: rgba(0, 102, 255, 0.2);
+            border-color: var(--electric-blue);
+        }
+
+        .desktop-icon img {
+            width: 48px;
+            height: 48px;
+            image-rendering: pixelated;
+        }
+
+        .desktop-icon span {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            color: var(--black);
+            text-shadow: 1px 1px 0 white;
+            text-align: center;
+            max-width: 70px;
+        }
+
+        /* Icon SVGs inline */
+        .icon-svg {
+            width: 48px;
+            height: 48px;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            position: relative;
+            z-index: 1;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        /* Windows 95 Style Window */
+        .window {
+            background: var(--window-gray);
+            border: 2px solid;
+            border-color: var(--window-light) var(--window-dark) var(--window-dark) var(--window-light);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+            animation: windowPop 0.5s var(--spring-soft);
+        }
+
+        @keyframes windowPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .window-header {
+            background: linear-gradient(90deg, var(--title-bar) 0%, #1084D0 100%);
+            padding: 4px 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .window-title {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .window-title-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 2px;
+        }
+
+        .window-btn {
+            width: 16px;
+            height: 14px;
+            background: var(--window-gray);
+            border: 2px solid;
+            border-color: var(--window-light) var(--window-dark) var(--window-dark) var(--window-light);
+            font-family: 'VT323', monospace;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .window-btn:active {
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+        }
+
+        .window-menu {
+            background: var(--window-gray);
+            padding: 2px 8px;
+            border-bottom: 1px solid var(--window-dark);
+        }
+
+        .window-menu span {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            padding: 2px 8px;
+            cursor: pointer;
+        }
+
+        .window-menu span:hover {
+            background: var(--title-bar);
+            color: white;
+        }
+
+        .window-content {
+            padding: 16px;
+            background: white;
+            min-height: 300px;
+        }
+
+        /* Hero Window */
+        .hero-window {
+            margin-top: 60px;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 20px;
+            background: var(--electric-blue);
+            padding: 20px;
+            border: 8px solid var(--black);
+            position: relative;
+        }
+
+        /* Logo Badge */
+        .logo-badge {
+            background: var(--lime-yellow);
+            border-radius: 50%;
+            padding: 20px 30px;
+            transform: rotate(-5deg);
+            box-shadow: 4px 4px 0 var(--black);
+            position: absolute;
+            top: -30px;
+            right: 30px;
+            z-index: 10;
+            animation: wobble 3s ease-in-out infinite;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .logo-badge h1 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 2rem;
+            color: var(--black);
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        /* Tool Panel */
+        .tool-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2px;
+            background: var(--window-gray);
+            padding: 4px;
+            border: 2px solid;
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+            width: fit-content;
+        }
+
+        .tool-btn {
+            width: 28px;
+            height: 28px;
+            background: var(--window-gray);
+            border: 1px solid;
+            border-color: var(--window-light) var(--window-dark) var(--window-dark) var(--window-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .tool-btn:hover {
+            background: var(--window-light);
+        }
+
+        .tool-btn.active {
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+            background: white;
+        }
+
+        /* Product Display Area */
+        .product-canvas {
+            background: var(--lime-yellow);
+            min-height: 400px;
+            position: relative;
+            border: 4px solid var(--black);
+            overflow: hidden;
+        }
+
+        .product-item {
+            position: absolute;
+            cursor: grab;
+            transition: transform 0.3s var(--spring-bounce);
+        }
+
+        .product-item:hover {
+            transform: scale(1.05) rotate(2deg);
+            z-index: 10;
+        }
+
+        .product-item img {
+            max-width: 200px;
+            height: auto;
+            filter: drop-shadow(4px 4px 0 rgba(0,0,0,0.3));
+        }
+
+        .product-label {
+            position: absolute;
+            font-family: 'VT323', monospace;
+            font-size: 24px;
+            color: var(--black);
+            background: white;
+            padding: 2px 8px;
+            border: 2px solid var(--black);
+        }
+
+        /* Outfit Builder Section */
+        .outfit-section {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            gap: 16px;
+        }
+
+        .outfit-items {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .outfit-item {
+            background: var(--window-light);
+            border: 2px solid;
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .outfit-item:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .outfit-item img {
+            width: 100%;
+            height: 80px;
+            object-fit: contain;
+        }
+
+        .outfit-preview {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            border: 2px solid;
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .outfit-preview img {
+            max-height: 380px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        /* Catalog Window */
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 16px;
+        }
+
+        .catalog-item {
+            background: var(--electric-blue);
+            border: 6px solid var(--black);
+            padding: 16px;
+            position: relative;
+            transition: all 0.3s var(--spring-bounce);
+        }
+
+        .catalog-item:hover {
+            transform: translateY(-8px) rotate(-1deg);
+            box-shadow: 8px 8px 0 var(--black);
+        }
+
+        .catalog-item-label {
+            position: absolute;
+            top: -12px;
+            left: 16px;
+            background: var(--lime-yellow);
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.5rem;
+            padding: 4px 12px;
+            border: 3px solid var(--black);
+        }
+
+        .catalog-item img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: contain;
+            background: white;
+            border: 2px solid var(--black);
+        }
+
+        .catalog-item-info {
+            margin-top: 12px;
+            color: white;
+        }
+
+        .catalog-item-name {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .catalog-item-desc {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .catalog-item-price {
+            display: inline-block;
+            background: var(--lime-yellow);
+            color: var(--black);
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.25rem;
+            padding: 4px 12px;
+            margin-top: 12px;
+            border: 2px solid var(--black);
+        }
+
+        /* Color Palette Bar */
+        .color-palette {
+            display: flex;
+            border: 2px solid;
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+            margin-top: 16px;
+        }
+
+        .color-swatch {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .color-swatch:hover {
+            transform: scale(1.2);
+            z-index: 10;
+        }
+
+        /* Dialog Box */
+        .dialog-box {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--window-gray);
+            border: 2px solid;
+            border-color: var(--window-light) var(--window-dark) var(--window-dark) var(--window-light);
+            padding: 16px;
+            max-width: 300px;
+            z-index: 1000;
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+            display: flex;
+            gap: 16px;
+            align-items: flex-start;
+            animation: dialogPop 0.5s var(--spring-soft);
+        }
+
+        @keyframes dialogPop {
+            0% { transform: translateY(100px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+
+        .dialog-assistant {
+            width: 60px;
+            flex-shrink: 0;
+        }
+
+        .dialog-assistant svg {
+            width: 100%;
+            height: auto;
+        }
+
+        .dialog-content p {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dialog-btn {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            padding: 4px 16px;
+            background: var(--window-gray);
+            border: 2px solid;
+            border-color: var(--window-light) var(--window-dark) var(--window-dark) var(--window-light);
+            cursor: pointer;
+        }
+
+        .dialog-btn:hover {
+            background: var(--window-light);
+        }
+
+        .dialog-btn:active {
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+        }
+
+        .dialog-btn.primary {
+            background: var(--title-bar);
+            color: white;
+        }
+
+        /* Taskbar */
+        .taskbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: var(--window-gray);
+            border-top: 2px solid var(--window-light);
+            display: flex;
+            align-items: center;
+            padding: 0 4px;
+            z-index: 999;
+        }
+
+        .start-btn {
+            font-family: 'VT323', monospace;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 4px 12px;
+            background: var(--window-gray);
+            border: 2px solid;
+            border-color: var(--window-light) var(--window-dark) var(--window-dark) var(--window-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .start-btn:hover {
+            background: var(--window-light);
+        }
+
+        .start-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .taskbar-apps {
+            display: flex;
+            gap: 4px;
+            margin-left: 8px;
+            flex: 1;
+        }
+
+        .taskbar-app {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            padding: 4px 12px;
+            background: var(--window-gray);
+            border: 2px solid;
+            border-color: var(--window-dark) var(--window-light) var(--window-light) var(--window-dark);
+        }
+
+        .taskbar-time {
+            font-family: 'VT323', monospace;
+            font-size: 14px;
+            padding: 4px 12px;
+            border-left: 2px solid var(--window-dark);
+        }
+
+        /* Ticker Tape - now a marquee */
+        .marquee-container {
+            background: var(--lime-yellow);
+            border: 4px solid var(--black);
+            padding: 12px 0;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .marquee-content {
+            display: flex;
+            animation: marquee 15s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-item {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.5rem;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .marquee-item::after {
+            content: '👜';
+        }
+
+        /* Footer */
+        .footer-window {
+            margin-bottom: 60px;
+        }
+
+        .footer-content {
+            background: var(--electric-blue);
+            color: white;
+            padding: 40px;
+            border: 6px solid var(--black);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+        }
+
+        .footer-col h4 {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: var(--lime-yellow);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .footer-col a {
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-col a:hover {
+            color: var(--lime-yellow);
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px dashed rgba(255,255,255,0.3);
+        }
+
+        .footer-bottom p {
+            font-family: 'VT323', monospace;
+            font-size: 1rem;
+        }
+
+        /* Add to Cart Button */
+        .add-cart-btn {
+            font-family: 'Permanent Marker', cursive;
+            font-size: 1rem;
+            padding: 8px 20px;
+            background: var(--hot-pink);
+            color: white;
+            border: 3px solid var(--black);
+            cursor: pointer;
+            transition: all 0.3s var(--spring-bounce);
+            margin-top: 8px;
+            display: block;
+            width: 100%;
+            text-align: center;
+        }
+
+        .add-cart-btn:hover {
+            background: var(--lime-yellow);
+            color: var(--black);
+            transform: scale(1.05);
+        }
+
+        /* Cart Notification */
+        .cart-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--hot-pink);
+            border: 3px solid var(--black);
+            padding: 12px 20px;
+            font-family: 'Permanent Marker', cursive;
+            color: white;
+            z-index: 2000;
+            transform: translateX(200%);
+            transition: transform 0.5s var(--spring-bounce);
+        }
+
+        .cart-notification.show {
+            transform: translateX(0);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .desktop-icons {
+                display: none;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+            }
+
+            .tool-panel {
+                display: none;
+            }
+
+            .outfit-section {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .logo-badge {
+                position: relative;
+                top: auto;
+                right: auto;
+                margin: 0 auto 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Clouds Background -->
+    <div class="clouds">
+        <div class="cloud cloud-1"></div>
+        <div class="cloud cloud-2"></div>
+        <div class="cloud cloud-3"></div>
+    </div>
+
+    <!-- Desktop Icons -->
+    <div class="desktop-icons">
+        <a href="#catalog" class="desktop-icon">
+            <svg class="icon-svg" viewBox="0 0 48 48">
+                <rect x="8" y="8" width="32" height="32" fill="#FFCC00" stroke="#000" stroke-width="2"/>
+                <rect x="12" y="4" width="24" height="8" fill="#8B4513" stroke="#000" stroke-width="2"/>
+                <rect x="16" y="16" width="16" height="4" fill="#000"/>
+                <rect x="16" y="24" width="12" height="4" fill="#000"/>
+            </svg>
+            <span>Shop Totes</span>
+        </a>
+        <a href="#" class="desktop-icon">
+            <svg class="icon-svg" viewBox="0 0 48 48">
+                <circle cx="24" cy="24" r="18" fill="#FF69B4" stroke="#000" stroke-width="2"/>
+                <text x="24" y="30" text-anchor="middle" font-size="20" fill="#fff">?</text>
+            </svg>
+            <span>Help</span>
+        </a>
+        <a href="#" class="desktop-icon">
+            <svg class="icon-svg" viewBox="0 0 48 48">
+                <rect x="6" y="12" width="36" height="28" fill="#87CEEB" stroke="#000" stroke-width="2"/>
+                <polygon points="24,16 6,32 42,32" fill="#7CFC00"/>
+                <circle cx="36" cy="18" r="4" fill="#FFFF00"/>
+            </svg>
+            <span>Gallery</span>
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Hero Window -->
+        <div class="window hero-window">
+            <div class="window-header">
+                <span class="window-title">
+                    <svg class="window-title-icon" viewBox="0 0 16 16">
+                        <rect x="2" y="2" width="12" height="12" fill="#FFCC00" stroke="#000"/>
+                    </svg>
+                    burntotes.exe - Main
+                </span>
+                <div class="window-controls">
+                    <button class="window-btn">_</button>
+                    <button class="window-btn">□</button>
+                    <button class="window-btn">×</button>
+                </div>
+            </div>
+            <div class="window-menu">
+                <span>File</span>
+                <span>Edit</span>
+                <span>View</span>
+                <span>Shop</span>
+                <span>Help</span>
+            </div>
+            <div class="window-content" style="padding: 0;">
+                <div class="hero-content">
+                    <div class="logo-badge">
+                        <h1>BURNT<br>TOTES</h1>
+                    </div>
+                    
+                    <div class="tool-panel">
+                        <button class="tool-btn">✏️</button>
+                        <button class="tool-btn active">🖌️</button>
+                        <button class="tool-btn">🎨</button>
+                        <button class="tool-btn">✂️</button>
+                        <button class="tool-btn">📐</button>
+                        <button class="tool-btn">🔲</button>
+                        <button class="tool-btn">⭕</button>
+                        <button class="tool-btn">🪣</button>
+                    </div>
+
+                    <div class="product-canvas">
+                        <div class="product-item" style="top: 20px; left: 30px;">
+                            <span class="product-label" style="top: -20px; left: 0;">a.</span>
+                            <img src="../Burnt Totes/BurntTotes_01.png" alt="Canvas Tote A">
+                        </div>
+                        <div class="product-item" style="top: 120px; right: 40px;">
+                            <span class="product-label" style="top: -20px; left: 0;">b.</span>
+                            <img src="../Burnt Totes/BurntTotes_02.png" alt="Canvas Tote B">
+                        </div>
+                        <div class="product-item" style="bottom: 40px; left: 50%;">
+                            <span class="product-label" style="top: -20px; left: 0;">c.</span>
+                            <img src="../Burnt Totes/BurntTotes_03.png" alt="Canvas Tote C">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Color Palette -->
+                <div class="color-palette">
+                    <div class="color-swatch" style="background: #000000;"></div>
+                    <div class="color-swatch" style="background: #FFFFFF;"></div>
+                    <div class="color-swatch" style="background: #FF0000;"></div>
+                    <div class="color-swatch" style="background: #FFFF00;"></div>
+                    <div class="color-swatch" style="background: #00FF00;"></div>
+                    <div class="color-swatch" style="background: #00FFFF;"></div>
+                    <div class="color-swatch" style="background: #0000FF;"></div>
+                    <div class="color-swatch" style="background: #FF00FF;"></div>
+                    <div class="color-swatch" style="background: #808080;"></div>
+                    <div class="color-swatch" style="background: #C0C0C0;"></div>
+                    <div class="color-swatch" style="background: #800000;"></div>
+                    <div class="color-swatch" style="background: #808000;"></div>
+                    <div class="color-swatch" style="background: #008000;"></div>
+                    <div class="color-swatch" style="background: #008080;"></div>
+                    <div class="color-swatch" style="background: #000080;"></div>
+                    <div class="color-swatch" style="background: #800080;"></div>
+                    <div class="color-swatch" style="background: #FF69B4;"></div>
+                    <div class="color-swatch" style="background: #FFA500;"></div>
+                    <div class="color-swatch" style="background: #FFD700;"></div>
+                    <div class="color-swatch" style="background: #E8FF00;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Marquee -->
+        <div class="marquee-container">
+            <div class="marquee-content">
+                <span class="marquee-item">CANVAS COMPANIONS FOR MODERN LIVING</span>
+                <span class="marquee-item">CARRY YOUR STUFF IN STYLE</span>
+                <span class="marquee-item">TOTES ADORABLE</span>
+                <span class="marquee-item">CANVAS COMPANIONS FOR MODERN LIVING</span>
+                <span class="marquee-item">CARRY YOUR STUFF IN STYLE</span>
+                <span class="marquee-item">TOTES ADORABLE</span>
+            </div>
+        </div>
+
+        <!-- Catalog Window -->
+        <div class="window" id="catalog">
+            <div class="window-header">
+                <span class="window-title">
+                    <svg class="window-title-icon" viewBox="0 0 16 16">
+                        <rect x="2" y="2" width="12" height="12" fill="#FF69B4" stroke="#000"/>
+                    </svg>
+                    catalog.exe - The Collection
+                </span>
+                <div class="window-controls">
+                    <button class="window-btn">_</button>
+                    <button class="window-btn">□</button>
+                    <button class="window-btn">×</button>
+                </div>
+            </div>
+            <div class="window-menu">
+                <span>File</span>
+                <span>Sort</span>
+                <span>Filter</span>
+                <span>View</span>
+            </div>
+            <div class="window-content">
+                <div class="catalog-grid">
+                    <div class="catalog-item">
+                        <span class="catalog-item-label">a.</span>
+                        <img src="../Burnt Totes/BurntTotes_01.png" alt="The Daily Carry">
+                        <div class="catalog-item-info">
+                            <h3 class="catalog-item-name">The Daily Carry</h3>
+                            <p class="catalog-item-desc">Your everyday companion. Structurally sound, aesthetically blessed.</p>
+                            <span class="catalog-item-price">$34</span>
+                            <button class="add-cart-btn" onclick="addToCart(this)">Add to Tote</button>
+                        </div>
+                    </div>
+
+                    <div class="catalog-item">
+                        <span class="catalog-item-label">b.</span>
+                        <img src="../Burnt Totes/BurntTotes_02.png" alt="The Statement Piece">
+                        <div class="catalog-item-info">
+                            <h3 class="catalog-item-name">The Statement Piece</h3>
+                            <p class="catalog-item-desc">Bold. Unapologetic. Definitely conversation-starting.</p>
+                            <span class="catalog-item-price">$38</span>
+                            <button class="add-cart-btn" onclick="addToCart(this)">Add to Tote</button>
+                        </div>
+                    </div>
+
+                    <div class="catalog-item">
+                        <span class="catalog-item-label">c.</span>
+                        <img src="../Burnt Totes/BurntTotes_03.png" alt="The Classic">
+                        <div class="catalog-item-info">
+                            <h3 class="catalog-item-name">The Classic</h3>
+                            <p class="catalog-item-desc">Timeless design meets modern functionality. A true icon.</p>
+                            <span class="catalog-item-price">$36</span>
+                            <button class="add-cart-btn" onclick="addToCart(this)">Add to Tote</button>
+                        </div>
+                    </div>
+
+                    <div class="catalog-item">
+                        <span class="catalog-item-label">d.</span>
+                        <img src="../Burnt Totes/Main.png" alt="The Main Character">
+                        <div class="catalog-item-info">
+                            <h3 class="catalog-item-name">The Main Character</h3>
+                            <p class="catalog-item-desc">When you need all eyes on you (and your groceries).</p>
+                            <span class="catalog-item-price">$42</span>
+                            <button class="add-cart-btn" onclick="addToCart(this)">Add to Tote</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- About Window -->
+        <div class="window">
+            <div class="window-header">
+                <span class="window-title">
+                    <svg class="window-title-icon" viewBox="0 0 16 16">
+                        <circle cx="8" cy="8" r="6" fill="#87CEEB" stroke="#000"/>
+                    </svg>
+                    about.txt - Notepad
+                </span>
+                <div class="window-controls">
+                    <button class="window-btn">_</button>
+                    <button class="window-btn">□</button>
+                    <button class="window-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content" style="font-family: 'VT323', monospace; font-size: 18px; line-height: 1.6;">
+                <p style="margin-bottom: 16px;">
+                    <strong>// ABOUT BURNT TOTES</strong>
+                </p>
+                <p style="margin-bottom: 16px;">
+                    We believe that carrying things should be an experience, not just a necessity. 
+                    Every tote we make is a small rebellion against boring bags.
+                </p>
+                <p style="margin-bottom: 16px;">
+                    Founded in someone's apartment. Still operating from someone's apartment. 
+                    100% canvas. 0% pretension. Okay, maybe a little pretension.
+                </p>
+                <p>
+                    <em>// Totes for people who get it.</em><span class="blink">|</span>
+                </p>
+            </div>
+        </div>
+
+        <!-- Footer Window -->
+        <div class="window footer-window">
+            <div class="window-header">
+                <span class="window-title">
+                    <svg class="window-title-icon" viewBox="0 0 16 16">
+                        <rect x="2" y="2" width="12" height="12" fill="#0066FF" stroke="#000"/>
+                    </svg>
+                    footer.sys
+                </span>
+                <div class="window-controls">
+                    <button class="window-btn">_</button>
+                    <button class="window-btn">□</button>
+                    <button class="window-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content" style="padding: 0;">
+                <div class="footer-content">
+                    <div class="footer-grid">
+                        <div class="footer-col">
+                            <h4>BURNT TOTES</h4>
+                            <p style="font-family: 'VT323', monospace; font-size: 1rem;">
+                                Canvas companions for the chronically stylish. 
+                                Hand-printed with love and caffeine.
+                            </p>
+                        </div>
+                        <div class="footer-col">
+                            <h4>SHOP</h4>
+                            <ul>
+                                <li><a href="#">All Totes</a></li>
+                                <li><a href="#">New Drops</a></li>
+                                <li><a href="#">Best Sellers</a></li>
+                                <li><a href="#">Limited Edition</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-col">
+                            <h4>INFO</h4>
+                            <ul>
+                                <li><a href="#">About Us</a></li>
+                                <li><a href="#">Shipping</a></li>
+                                <li><a href="#">Returns</a></li>
+                                <li><a href="#">FAQ</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-col">
+                            <h4>CONNECT</h4>
+                            <ul>
+                                <li><a href="#">Instagram</a></li>
+                                <li><a href="#">TikTok</a></li>
+                                <li><a href="#">Pinterest</a></li>
+                                <li><a href="#">Newsletter</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="footer-bottom">
+                        <p>© 2026 Burnt Totes. All rights reserved. Made with 👜 in someone's apartment.</p>
+                        <p style="margin-top: 8px; opacity: 0.7;">Best viewed in Netscape Navigator 4.0 or higher</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dialog Box (Clippy-style) -->
+    <div class="dialog-box" id="clippy-dialog">
+        <div class="dialog-assistant">
+            <svg viewBox="0 0 60 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Clippy body -->
+                <ellipse cx="30" cy="50" rx="20" ry="25" fill="#C0C0C0" stroke="#000" stroke-width="2"/>
+                <ellipse cx="30" cy="50" rx="16" ry="21" fill="#E8E8E8"/>
+                <!-- Eyes -->
+                <circle cx="24" cy="42" r="6" fill="white" stroke="#000" stroke-width="1.5"/>
+                <circle cx="36" cy="42" r="6" fill="white" stroke="#000" stroke-width="1.5"/>
+                <circle cx="25" cy="43" r="3" fill="#000"/>
+                <circle cx="37" cy="43" r="3" fill="#000"/>
+                <!-- Eyebrows -->
+                <path d="M18 36 Q24 33 30 36" stroke="#000" stroke-width="2" fill="none"/>
+                <path d="M30 36 Q36 33 42 36" stroke="#000" stroke-width="2" fill="none"/>
+                <!-- Wire parts -->
+                <path d="M30 25 Q20 15 30 5" stroke="#808080" stroke-width="6" fill="none" stroke-linecap="round"/>
+                <path d="M30 25 Q40 15 30 5" stroke="#C0C0C0" stroke-width="4" fill="none" stroke-linecap="round"/>
+            </svg>
+        </div>
+        <div class="dialog-content">
+            <p>It looks like you're shopping for totes! Would you like help finding the perfect canvas companion?</p>
+            <div class="dialog-buttons">
+                <button class="dialog-btn primary" onclick="closeDialog()">Yes please!</button>
+                <button class="dialog-btn" onclick="closeDialog()">No thanks</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cart Notification -->
+    <div class="cart-notification" id="cart-notification">
+        Added to cart! 🛒
+    </div>
+
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <button class="start-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                <rect x="1" y="1" width="8" height="8" fill="#FF0000"/>
+                <rect x="11" y="1" width="8" height="8" fill="#00FF00"/>
+                <rect x="1" y="11" width="8" height="8" fill="#0000FF"/>
+                <rect x="11" y="11" width="8" height="8" fill="#FFFF00"/>
+            </svg>
+            Start
+        </button>
+        <div class="taskbar-apps">
+            <div class="taskbar-app">📁 burntotes.exe</div>
+            <div class="taskbar-app">🛒 cart (0)</div>
+        </div>
+        <div class="taskbar-time" id="taskbar-time">12:00 PM</div>
+    </div>
+
+    <style>
+        .blink {
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+
+    <script>
+        // Update taskbar time
+        function updateTime() {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            document.getElementById('taskbar-time').textContent = time;
+        }
+        updateTime();
+        setInterval(updateTime, 60000);
+
+        // Close dialog
+        function closeDialog() {
+            document.getElementById('clippy-dialog').style.display = 'none';
+        }
+
+        // Cart functionality
+        let cartCount = 0;
+        function addToCart(btn) {
+            cartCount++;
+            
+            // Update taskbar
+            document.querySelector('.taskbar-apps').innerHTML = `
+                <div class="taskbar-app">📁 burntotes.exe</div>
+                <div class="taskbar-app">🛒 cart (${cartCount})</div>
+            `;
+
+            // Show notification
+            const notification = document.getElementById('cart-notification');
+            notification.classList.add('show');
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 2000);
+
+            // Button animation
+            btn.textContent = 'Added! ✓';
+            btn.style.background = '#00FF00';
+            btn.style.color = '#000';
+            setTimeout(() => {
+                btn.textContent = 'Add to Tote';
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 1500);
+        }
+
+        // Make product items draggable (fun interaction)
+        const productItems = document.querySelectorAll('.product-item');
+        productItems.forEach(item => {
+            let isDragging = false;
+            let startX, startY, initialX, initialY;
+
+            item.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                item.style.cursor = 'grabbing';
+                startX = e.clientX;
+                startY = e.clientY;
+                const rect = item.getBoundingClientRect();
+                initialX = rect.left;
+                initialY = rect.top;
+                item.style.position = 'absolute';
+                item.style.zIndex = '100';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+                item.style.left = (item.offsetLeft + dx) + 'px';
+                item.style.top = (item.offsetTop + dy) + 'px';
+                startX = e.clientX;
+                startY = e.clientY;
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    item.style.cursor = 'grab';
+                    item.style.zIndex = '';
+                }
+            });
+        });
+
+        // Window drag functionality
+        const windows = document.querySelectorAll('.window');
+        windows.forEach(win => {
+            const header = win.querySelector('.window-header');
+            let isDragging = false;
+            let startX, startY;
+
+            header.addEventListener('mousedown', (e) => {
+                if (e.target.classList.contains('window-btn')) return;
+                isDragging = true;
+                startX = e.clientX - win.offsetLeft;
+                startY = e.clientY - win.offsetTop;
+                win.style.zIndex = '100';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                win.style.position = 'relative';
+                win.style.left = (e.clientX - startX) + 'px';
+                win.style.top = (e.clientY - startY) + 'px';
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        });
+    </script>
+</body>
+</html>

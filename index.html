@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Burnt Totes | Well Bread</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Earthy 70s Base */
+            --cream: #F5F0E1;
+            --cream-dark: #EBE5D6;
+            --moss-green: #2E3B23;
+            --olive: #5C6B4A;
+            --burnt-orange: #D4622A;
+            --mustard: #D4A72C;
+            
+            /* Synthetic Pop Accents */
+            --electric-blue: #2D7DD2;
+            --bubblegum-pink: #FF6B9D;
+            --mint: #7ECFB8;
+            
+            /* Spring animations */
+            --spring-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            --spring-soft: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Custom Cursors */
+        html {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='12' fill='%23D4622A' stroke='%232E3B23' stroke-width='2'/%3E%3C/svg%3E") 16 16, auto;
+        }
+
+        .product-card:hover {
+            cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpath d='M20 5 C12 5 8 12 10 18 C6 20 5 25 10 28 C12 35 18 35 20 35 C22 35 28 35 30 28 C35 25 34 20 30 18 C32 12 28 5 20 5' fill='%23FF6B9D' stroke='%232E3B23' stroke-width='2'/%3E%3Cpath d='M14 15 Q16 20 14 25 M26 15 Q24 20 26 25' fill='none' stroke='%232E3B23' stroke-width='1.5'/%3E%3C/svg%3E") 20 20, grab;
+        }
+
+        body {
+            font-family: 'Playfair Display', Georgia, serif;
+            background: var(--cream);
+            color: var(--moss-green);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Noise/Grain Overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Floating Pill Navigation */
+        .nav-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            animation: navDrop 0.8s var(--spring-soft) forwards;
+        }
+
+        @keyframes navDrop {
+            0% { opacity: 0; transform: translateX(-50%) translateY(-100px); }
+            100% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .nav-pill {
+            display: flex;
+            gap: 8px;
+            padding: 8px 12px;
+            background: var(--moss-green);
+            border-radius: 50px;
+            box-shadow: 0 8px 32px rgba(46, 59, 35, 0.3);
+            transition: transform 0.3s var(--spring-bounce);
+        }
+
+        .nav-pill:hover {
+            transform: scale(1.02);
+        }
+
+        .nav-item {
+            padding: 12px 24px;
+            color: var(--cream);
+            text-decoration: none;
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            border-radius: 40px;
+            transition: all 0.3s var(--spring-bounce);
+            position: relative;
+        }
+
+        .nav-item:hover {
+            background: var(--burnt-orange);
+            transform: scale(1.08);
+        }
+
+        .nav-item.active {
+            background: var(--cream);
+            color: var(--moss-green);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 120px 40px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-gradient {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(ellipse at 20% 30%, var(--bubblegum-pink) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, var(--mint) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, var(--mustard) 0%, transparent 60%);
+            opacity: 0.3;
+            animation: gradientPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes gradientPulse {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.05); }
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            max-width: 1400px;
+            width: 100%;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text {
+            animation: slideInLeft 1s var(--spring-soft) 0.3s forwards;
+            opacity: 0;
+            transform: translateX(-80px);
+        }
+
+        @keyframes slideInLeft {
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .hero-tagline {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--burnt-orange);
+            margin-bottom: 16px;
+            transform: rotate(-3deg);
+            display: inline-block;
+        }
+
+        .hero-title {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: clamp(4rem, 10vw, 8rem);
+            line-height: 0.95;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-title span {
+            display: block;
+            color: var(--burnt-orange);
+        }
+
+        .hero-description {
+            font-size: 1.25rem;
+            line-height: 1.7;
+            max-width: 480px;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+
+        .hero-image-container {
+            position: relative;
+            animation: floatIn 1.2s var(--spring-soft) 0.5s forwards;
+            opacity: 0;
+            transform: translateY(60px) rotate(5deg);
+        }
+
+        @keyframes floatIn {
+            to { opacity: 1; transform: translateY(0) rotate(0deg); }
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: 24px;
+            box-shadow: 
+                0 24px 80px rgba(46, 59, 35, 0.25),
+                0 8px 24px rgba(46, 59, 35, 0.15);
+            transition: transform 0.5s var(--spring-bounce);
+            animation: heroFloat 6s ease-in-out infinite;
+        }
+
+        @keyframes heroFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .hero-image:hover {
+            transform: scale(1.05) rotate(-2deg);
+        }
+
+        /* Sticker Buttons */
+        .sticker-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 32px;
+            background: var(--mustard);
+            color: var(--moss-green);
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1rem;
+            text-decoration: none;
+            border: 3px solid var(--moss-green);
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s var(--spring-bounce);
+            box-shadow: 4px 4px 0 var(--moss-green);
+            transform: rotate(-1deg);
+        }
+
+        .sticker-btn::before {
+            content: '$';
+            position: absolute;
+            top: -12px;
+            right: -12px;
+            width: 36px;
+            height: 36px;
+            background: var(--electric-blue);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            color: white;
+            border: 2px solid var(--moss-green);
+        }
+
+        .sticker-btn:hover {
+            transform: rotate(1deg) scale(1.05);
+            box-shadow: 6px 6px 0 var(--moss-green);
+            background: var(--burnt-orange);
+            color: var(--cream);
+        }
+
+        .sticker-btn:active {
+            transform: rotate(0deg) scale(0.98);
+            box-shadow: 2px 2px 0 var(--moss-green);
+        }
+
+        /* Section Titles */
+        .section-header {
+            text-align: center;
+            padding: 80px 40px 60px;
+            position: relative;
+        }
+
+        .section-pretitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--burnt-orange);
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            letter-spacing: -0.02em;
+        }
+
+        /* Product Grid - Bento Box */
+        .product-section {
+            padding: 0 40px 100px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .product-card {
+            background: var(--cream-dark);
+            border-radius: 24px;
+            padding: 24px;
+            position: relative;
+            border: 3px solid transparent;
+            box-shadow: 
+                0 4px 20px rgba(46, 59, 35, 0.08),
+                0 12px 40px rgba(46, 59, 35, 0.06);
+            transition: all 0.4s var(--spring-bounce);
+            opacity: 0;
+            transform: translateY(40px);
+            animation: cardSlideIn 0.6s var(--spring-soft) forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes cardSlideIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--burnt-orange);
+            box-shadow: 
+                0 12px 40px rgba(46, 59, 35, 0.15),
+                0 24px 60px rgba(46, 59, 35, 0.1);
+        }
+
+        /* Featured card spans 2 columns */
+        .product-card.featured {
+            grid-column: span 2;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            padding: 8px 16px;
+            background: var(--electric-blue);
+            color: white;
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 0.7rem;
+            border-radius: 20px;
+            letter-spacing: 0.1em;
+            animation: badgePulse 2s ease-in-out infinite;
+            z-index: 10;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+            background: linear-gradient(135deg, var(--mint) 0%, var(--bubblegum-pink) 100%);
+            aspect-ratio: 1;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.5s var(--spring-bounce);
+            filter: saturate(1.1);
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.08) rotate(2deg);
+        }
+
+        .product-info {
+            padding-top: 20px;
+        }
+
+        .product-name {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+        }
+
+        .product-description {
+            font-style: italic;
+            color: var(--olive);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1.5rem;
+            color: var(--burnt-orange);
+        }
+
+        .add-to-cart {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--moss-green);
+            border: none;
+            color: var(--cream);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s var(--spring-bounce);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .add-to-cart:hover {
+            background: var(--burnt-orange);
+            transform: scale(1.15) rotate(90deg);
+        }
+
+        /* Daily Specials Section */
+        .specials-section {
+            background: var(--moss-green);
+            padding: 100px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .specials-section .section-header {
+            color: var(--cream);
+        }
+
+        .specials-section .section-pretitle {
+            color: var(--mustard);
+        }
+
+        .specials-grid {
+            display: flex;
+            gap: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            overflow-x: auto;
+            padding: 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .specials-grid::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .specials-grid::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1);
+            border-radius: 4px;
+        }
+
+        .specials-grid::-webkit-scrollbar-thumb {
+            background: var(--burnt-orange);
+            border-radius: 4px;
+        }
+
+        .special-card {
+            flex: 0 0 300px;
+            background: var(--cream);
+            border-radius: 20px;
+            padding: 32px;
+            scroll-snap-align: start;
+            transition: all 0.4s var(--spring-bounce);
+            position: relative;
+        }
+
+        .special-card::before {
+            content: '★ SPECIAL ★';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--bubblegum-pink);
+            color: var(--moss-green);
+            padding: 6px 16px;
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 0.65rem;
+            border-radius: 20px;
+            letter-spacing: 0.1em;
+        }
+
+        .special-card:hover {
+            transform: translateY(-12px) rotate(-1deg);
+        }
+
+        .special-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-custom {
+            width: 28px;
+            height: 28px;
+            border: 3px solid var(--moss-green);
+            border-radius: 6px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s var(--spring-bounce);
+        }
+
+        .checkbox-custom:hover {
+            background: var(--mint);
+            transform: scale(1.1);
+        }
+
+        .checkbox-custom.checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2rem;
+            color: var(--burnt-orange);
+            font-weight: bold;
+        }
+
+        .special-name {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1.1rem;
+        }
+
+        /* About Section */
+        .about-section {
+            padding: 120px 40px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-quote {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-style: italic;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .about-quote::before,
+        .about-quote::after {
+            content: '"';
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 4rem;
+            color: var(--burnt-orange);
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        .about-quote::before {
+            top: -20px;
+            left: -20px;
+        }
+
+        .about-quote::after {
+            bottom: -60px;
+            right: -20px;
+        }
+
+        .about-signature {
+            font-family: 'Caveat', cursive;
+            font-size: 2rem;
+            color: var(--burnt-orange);
+            transform: rotate(-5deg);
+            display: inline-block;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--moss-green);
+            color: var(--cream);
+            overflow: hidden;
+        }
+
+        .ticker-tape {
+            background: var(--burnt-orange);
+            padding: 20px 0;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 20s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 40px;
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1.25rem;
+            color: var(--cream);
+        }
+
+        .ticker-item::after {
+            content: '🥪';
+            margin-left: 40px;
+        }
+
+        .footer-content {
+            padding: 80px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 60px;
+        }
+
+        .footer-brand {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .footer-tagline {
+            font-family: 'Caveat', cursive;
+            font-size: 1.25rem;
+            color: var(--mustard);
+            margin-bottom: 24px;
+        }
+
+        .footer-heading {
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            margin-bottom: 24px;
+            color: var(--mustard);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--cream);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--burnt-orange);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(245, 240, 225, 0.1);
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--olive);
+        }
+
+        /* Decorative Elements */
+        .deco-circle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .deco-circle.orange {
+            width: 300px;
+            height: 300px;
+            background: var(--burnt-orange);
+            opacity: 0.1;
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .deco-circle.blue {
+            width: 200px;
+            height: 200px;
+            background: var(--electric-blue);
+            opacity: 0.1;
+            top: 20%;
+            right: 5%;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-image-container {
+                order: -1;
+            }
+
+            .hero-image {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .product-card.featured {
+                grid-column: span 2;
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-pill {
+                gap: 4px;
+                padding: 6px 8px;
+            }
+
+            .nav-item {
+                padding: 10px 16px;
+                font-size: 0.75rem;
+            }
+
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .product-card.featured {
+                grid-column: span 1;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        /* Scroll animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s var(--spring-soft);
+        }
+
+        .scroll-reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Cart counter */
+        .cart-counter {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 70px;
+            height: 70px;
+            background: var(--burnt-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Dela Gothic One', sans-serif;
+            font-size: 1.5rem;
+            color: var(--cream);
+            box-shadow: 0 8px 32px rgba(212, 98, 42, 0.4);
+            cursor: pointer;
+            transition: all 0.3s var(--spring-bounce);
+            z-index: 1000;
+            border: 3px solid var(--cream);
+        }
+
+        .cart-counter:hover {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        .cart-counter .count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 28px;
+            height: 28px;
+            background: var(--electric-blue);
+            border-radius: 50%;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--cream);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav-container">
+        <div class="nav-pill">
+            <a href="#" class="nav-item active">Menu</a>
+            <a href="#specials" class="nav-item">Specials</a>
+            <a href="#about" class="nav-item">About</a>
+            <a href="#" class="nav-item">Cart</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-gradient"></div>
+        <div class="deco-circle orange"></div>
+        <div class="deco-circle blue"></div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <span class="hero-tagline">~ Est. sometime between lunch ~</span>
+                <h1 class="hero-title">
+                    Well
+                    <span>Bread</span>
+                </h1>
+                <p class="hero-description">
+                    A study in sourdough and structural integrity. Each tote is a meditation on the humble sandwich—elevated, celebrated, and ready to carry your groceries with unparalleled sophistication.
+                </p>
+                <a href="#menu" class="sticker-btn">
+                    <span>View the Menu</span>
+                    <span>→</span>
+                </a>
+            </div>
+            <div class="hero-image-container">
+                <img src="../Burnt Totes/BurntTotes_01.png" alt="Sandwich Tote Bag" class="hero-image">
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Grid Section -->
+    <section id="menu" class="product-section">
+        <div class="section-header scroll-reveal">
+            <span class="section-pretitle">Today's Offerings</span>
+            <h2 class="section-title">The Daily Menu</h2>
+        </div>
+
+        <div class="bento-grid">
+            <!-- Featured Product -->
+            <div class="product-card featured">
+                <div class="product-image-wrapper">
+                    <img src="../Burnt Totes/A perfectly stacked BLT sandwich on toasted sourdough bread, with crisp bacon, bright red tomato slices, fresh green lettuce, and a light smear of mayonnaise. The sandwich is centered on a plain white plate, casting a hard shadow behind it. Shot w1.png" alt="BLT Tote" class="product-image">
+                </div>
+                <div class="product-info">
+                    <span class="product-badge">BESTSELLER</span>
+                    <h3 class="product-name">The BLT Statement</h3>
+                    <p class="product-description">Bacon, lettuce, tomato—the holy trinity of sandwich construction. This tote speaks volumes about your refined taste and your appreciation for the classics.</p>
+                    <div class="product-footer">
+                        <span class="product-price">$38</span>
+                        <button class="add-to-cart" aria-label="Add to cart">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regular Products -->
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <img src="../Burnt Totes/A golden-brown grilled cheese sandwich, cut in half diagonally with gooey, melted yellow cheese stretching slightly between the halves. The toast is crisp and unevenly browned, with butter glistening on the surface. Placed on a plain white plate or.png" alt="Grilled Cheese Tote" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">The Melt</h3>
+                    <p class="product-description">For those who appreciate the simple pleasures of melted dairy on toasted bread.</p>
+                    <div class="product-footer">
+                        <span class="product-price">$32</span>
+                        <button class="add-to-cart" aria-label="Add to cart">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <img src="./2025 My Passover Haggadah (dragged) 2.jpgkdvhhdjfjvgtvfuvhuvnbghlubuvdidftlrgguflfihcjcfgbuhnvtvrbdugiegntkccttklnjgjrlvjkkddcrgnnhcnhnri" alt="Bacon Egg Cheese Tote" class="product-image">
+                </div>
+                <div class="product-info">
+                    <span class="product-badge">NEW</span>
+                    <h3 class="product-name">The Bodega Classic</h3>
+                    <p class="product-description">Bacon, egg, and cheese on a roll. A New York institution, now portable.</p>
+                    <div class="product-footer">
+                        <span class="product-price">$36</span>
+                        <button class="add-to-cart" aria-label="Add to cart">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <img src="../Burnt Totes/A classic tuna salad sandwich with chopped celery, purple onion, and carrot mixed in, also lettuce on sandwich on toasted pumpernickel, with visible flecks of celery and mayonnaise, slightly unevenly spread. Cut in half, presented at an angle. Ser1.png" alt="Tuna Salad Tote" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">The Aquatic</h3>
+                    <p class="product-description">Tuna salad on pumpernickel. For the maritime soul with terrestrial responsibilities.</p>
+                    <div class="product-footer">
+                        <span class="product-price">$34</span>
+                        <button class="add-to-cart" aria-label="Add to cart">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <img src="../Burnt Totes/A thick peanut butter jelly sandwich FLOATING ON bright plate  COMPLEMENTED BY A TALL_Glass of Orange juice, sandwich POSITIONED CENTRALLY,  GOLDEN hOUR SUNLIGHT HITTING THE GLASSWARE,_SYMMETRY, SHOT WITH DJI MAVIC 3 PRO AERIAL VIEW,_SURREAL_EDITO1.png" alt="PB&J Tote" class="product-image">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">The Nostalgic</h3>
+                    <p class="product-description">PB&J with OJ. A return to simpler times, with impeccable presentation.</p>
+                    <div class="product-footer">
+                        <span class="product-price">$30</span>
+                        <button class="add-to-cart" aria-label="Add to cart">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="product-image-wrapper">
+                    <img src="../Burnt Totes/BurntTotes_02.png" alt="Signature Tote" class="product-image">
+                </div>
+                <div class="product-info">
+                    <span class="product-badge">LIMITED</span>
+                    <h3 class="product-name">The Signature</h3>
+                    <p class="product-description">Our house special. Because sometimes you need to make a statement at the farmer's market.</p>
+                    <div class="product-footer">
+                        <span class="product-price">$42</span>
+                        <button class="add-to-cart" aria-label="Add to cart">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Daily Specials Section -->
+    <section id="specials" class="specials-section">
+        <div class="section-header">
+            <span class="section-pretitle">Don't miss out</span>
+            <h2 class="section-title">Daily Specials</h2>
+        </div>
+
+        <div class="specials-grid">
+            <div class="special-card">
+                <div class="special-checkbox">
+                    <div class="checkbox-custom" onclick="this.classList.toggle('checked')"></div>
+                    <span class="special-name">The Reuben Redux</span>
+                </div>
+                <p class="product-description">Corned beef, swiss, sauerkraut—a deli dream realized in canvas form.</p>
+                <span class="product-price">$36</span>
+            </div>
+
+            <div class="special-card">
+                <div class="special-checkbox">
+                    <div class="checkbox-custom" onclick="this.classList.toggle('checked')"></div>
+                    <span class="special-name">The Caprese Moment</span>
+                </div>
+                <p class="product-description">Fresh mozzarella, tomato, basil. Italian summer, contained.</p>
+                <span class="product-price">$34</span>
+            </div>
+
+            <div class="special-card">
+                <div class="special-checkbox">
+                    <div class="checkbox-custom" onclick="this.classList.toggle('checked')"></div>
+                    <span class="special-name">The Club House</span>
+                </div>
+                <p class="product-description">Triple-decker ambition. Three layers of excellence.</p>
+                <span class="product-price">$40</span>
+            </div>
+
+            <div class="special-card">
+                <div class="special-checkbox">
+                    <div class="checkbox-custom" onclick="this.classList.toggle('checked')"></div>
+                    <span class="special-name">The Cubano Drift</span>
+                </div>
+                <p class="product-description">Pressed perfection. Pork, ham, swiss, pickles—pressed with intention.</p>
+                <span class="product-price">$38</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section scroll-reveal">
+        <blockquote class="about-quote">
+            We believe that carrying your groceries should be an act of self-expression. Why settle for ordinary when you can carry your kale in a canvas celebration of culinary art?
+        </blockquote>
+        <span class="about-signature">— The Burnt Totes Collective</span>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="ticker-tape">
+            <div class="ticker-content">
+                <span class="ticker-item">BUY A SANDWICH</span>
+                <span class="ticker-item">CARRY A SANDWICH</span>
+                <span class="ticker-item">BE THE SANDWICH</span>
+                <span class="ticker-item">BUY A SANDWICH</span>
+                <span class="ticker-item">CARRY A SANDWICH</span>
+                <span class="ticker-item">BE THE SANDWICH</span>
+                <span class="ticker-item">BUY A SANDWICH</span>
+                <span class="ticker-item">CARRY A SANDWICH</span>
+                <span class="ticker-item">BE THE SANDWICH</span>
+            </div>
+        </div>
+
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">Burnt Totes</div>
+                <p class="footer-tagline">Sophisticated sandwich appreciation since whenever.</p>
+                <p style="max-width: 300px; line-height: 1.6; opacity: 0.8;">
+                    Hand-printed. Ethically sourced canvas. Questionable puns included at no extra charge.
+                </p>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">SHOP</h4>
+                <ul class="footer-links">
+                    <li><a href="#">All Totes</a></li>
+                    <li><a href="#">New Arrivals</a></li>
+                    <li><a href="#">Bestsellers</a></li>
+                    <li><a href="#">Limited Edition</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">INFO</h4>
+                <ul class="footer-links">
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Shipping</a></li>
+                    <li><a href="#">Returns</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="footer-heading">CONNECT</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">TikTok</a></li>
+                    <li><a href="#">Newsletter</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 Burnt Totes. All sandwiches reserved. Made with 🥪 and questionable life choices.</p>
+        </div>
+    </footer>
+
+    <!-- Floating Cart -->
+    <div class="cart-counter">
+        <span>🛒</span>
+        <span class="count">0</span>
+    </div>
+
+    <script>
+        // Scroll reveal animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.scroll-reveal').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Cart functionality
+        let cartCount = 0;
+        const cartCounter = document.querySelector('.cart-counter .count');
+        const addButtons = document.querySelectorAll('.add-to-cart');
+
+        addButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                cartCount++;
+                cartCounter.textContent = cartCount;
+                
+                // Bounce animation
+                this.style.transform = 'scale(1.3) rotate(180deg)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 300);
+
+                // Cart bounce
+                const cart = document.querySelector('.cart-counter');
+                cart.style.transform = 'scale(1.2)';
+                setTimeout(() => {
+                    cart.style.transform = '';
+                }, 200);
+            });
+        });
+
+        // Nav item active state
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => {
+            item.addEventListener('click', function(e) {
+                navItems.forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Squish effect on product cards (3D tilt)
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transition = 'all 0.1s ease-out';
+            });
+            
+            card.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale(1.02)`;
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                this.style.transform = '';
+            });
+        });
+
+        // Parallax effect on hero gradient
+        document.addEventListener('mousemove', function(e) {
+            const gradient = document.querySelector('.hero-gradient');
+            if (gradient) {
+                const x = e.clientX / window.innerWidth;
+                const y = e.clientY / window.innerHeight;
+                gradient.style.transform = `translate(${x * 30 - 15}px, ${y * 30 - 15}px)`;
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href !== '#') {
+                    e.preventDefault();
+                    const target = document.querySelector(href);
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
